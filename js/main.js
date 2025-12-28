@@ -69,7 +69,6 @@ class ViewerConstructor{
         
         let scenes = {};
         
-        // Configuración inicial
         let v = {
             "default": {
                 "firstScene": cuartos[0].id,
@@ -82,9 +81,8 @@ class ViewerConstructor{
             "scenes": { }
         }
 
-        // Procesar cada cuarto para generar las escenas de Pannellum
         this.cuartos.forEach((element, index)=> {
-            scenes[`${element.id}`] = { // Usamos el ID real del cuarto como key
+            scenes[`${element.id}`] = { 
                 title: "",
                 hfov: 120,
                 pitch: 0,
@@ -97,20 +95,17 @@ class ViewerConstructor{
             
             let objetos = [];
             
-            // Procesar Hotspots (Puntos de info)
             if(element.modelos){
                 element.modelos.forEach((e)=>{
                     let hotspotData = { ...e }; // Clonar
-                    hotspotData.createTooltipFunc = hotspot; // Asignar la función visual
+                    hotspotData.createTooltipFunc = hotspot; 
                     objetos.push(hotspotData);
                 });
             }
 
-            // Procesar Salidas (Flechas)
             if(element.salidas){
                 element.salidas.forEach((e)=>{
                     let salidaProcesada = { ...e };
-                    // Si viene como string desde la BD, buscamos la función en window
                     if (typeof e.clickHandlerFunc === 'string') {
                         salidaProcesada.clickHandlerFunc = window[e.clickHandlerFunc];
                     }
@@ -152,7 +147,6 @@ class ViewerConstructor{
             progressBar.style.width = Math.round(this.carga) + "%";
             progressText.textContent = Math.round(this.carga) + "%";
             
-            // Chequear si Pannellum ya cargó
             if (this.viewer.isLoaded()) {
                 clearInterval(intervar);
                 clearInterval(intervalConsejo);
@@ -188,7 +182,6 @@ class ViewerConstructor{
 
  
 
-        // Cargar Videos en Carrusel
         length = args.url.length;
         track.innerHTML = "";
         indicators.innerHTML = "";
@@ -230,8 +223,6 @@ class ViewerConstructor{
         let pitch = this.viewer.getPitch(); 
         let yaw   = this.viewer.getYaw();    
         this.viewer.lookAt(pitch, yaw, 120, 2500);
-        
-        // Limpiar videos para que paren de reproducirse
         track.innerHTML = "";
     }
 
@@ -297,7 +288,6 @@ class ViewerConstructor{
             })
         });
 
-        // Precarga inteligente de la siguiente escena conectada
         var escenaActualId = this.viewer.getScene();
         var config = this.viewer.getConfig();
         var escenaActual = config.scenes[escenaActualId];
@@ -332,10 +322,8 @@ class ViewerConstructor{
     }
 }
 
-// Inicialización
 let vistaPrinc;
 const main = ()=>{
-    // Aseguramos que 'modelos' y 'cuartos' existan (vienen del PHP)
     if(typeof modelos !== 'undefined' && typeof cuartos !== 'undefined' && cuartos.length > 0) {
         vistaPrinc = new ViewerConstructor(modelos, cuartos);
         
@@ -349,7 +337,6 @@ const main = ()=>{
     }
 }
 
-// Función visual del Hotspot (Info)
 function hotspot(hotSpotDiv, args) {
     let pulse;
     pulse = document.createElement("div");
@@ -363,7 +350,6 @@ function hotspot(hotSpotDiv, args) {
     });
 }
 
-// Lógica del Carrusel
 function updateCarousel() {
     track.style.transform = `translateX(-${currentIndex * 100}%)`;
     counter.textContent = `${currentIndex + 1} / ${length}`;

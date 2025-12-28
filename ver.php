@@ -132,10 +132,28 @@ foreach ($lista_cuartos as $cuarto) {
 
 <body>
 <div id="app"> 
-    <div class="button">
-        <button class="button_mas">+</button>
-    </div>
+
     <div class="imagenes">
+        <div class="button">
+            <button id="btn-agregar" class="button_mas btn-comun">+</button>
+            <button id="btn-guardar" class="button_mas--s btn-comun btn-des">Guardar</button>
+            <button id="btn-borrar" class="button_mas--s btn-exit btn-des">Cancelar</button>
+        </div>
+        <div id="modal" class="modal-cont btn-des">
+            <div class="modal-overlay "></div>
+
+        <div  class="modal">
+            <h1 class="modal_titulo">¿Estás seguro?</h1>
+            <h2 class="modal_descripcion">Se guardarán los cambios actuales en tu perfil.</h2>
+            
+            <div class="modal-actions">
+                <button id="btn-exit" class="btn-exit">Salir</button>
+                
+                <button id="btn-edit" class="btn-comun">Continuar</button>
+            </div>
+        </div>
+        </div>
+
         <div id="panorama" class="paronama image-1 ">   
             <div id="loading"  role="status" aria-live="polite">
                 <div class="loading-overlay">
@@ -192,10 +210,9 @@ foreach ($lista_cuartos as $cuarto) {
 </footer>
 
 <script>
-    // Generamos la variable 'modelos'
+
     const modelos = <?php echo json_encode($modelos_export, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>;
 
-    // Generamos 'cuartos' referenciando a 'modelos'
     const cuartos = [
         <?php foreach ($cuartos_export as $c): ?>
         {
@@ -214,6 +231,7 @@ foreach ($lista_cuartos as $cuarto) {
 </script>
 
 <script src="js/main.js"></script>
+<script src="js/editor.js"></script>
 
 </body>
 </html>

@@ -1,18 +1,171 @@
-.button{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width:100vh;
-    height: 55px;
-    background: red;
-    position: relative;
-    bottom: 0;
+/* --- CONTENEDOR PRINCIPAL --- */
+    .button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%; 
+        height: auto; 
+        padding: 10px 0;
+        background: transparent;
+        position: absolute;
+        bottom: 61px;
+        left: 0;
+        z-index: 999;
+        gap: 20px; 
+    }
+
+    /* --- ESTILOS COMUNES PARA AMBOS BOTONES --- */
+    .btn-comun {
+        background-color: #6200ea;
+        color: white;
+        border: none;
+        font-family: sans-serif;
+        font-weight: bold;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .btn-comun:hover {
+        background-color: #3700b3;
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .btn-comun:active {
+        transform: translateY(0) scale(0.95);
+    }
+
+    /* --- BOTÓN CIRCULAR (+) --- */
+    .button_mas {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%; /* Círculo perfecto */
+        font-size: 30px;
+    }
+
+    /* --- BOTÓN GUARDAR (PÍLDORA) --- */
+    .button_mas--s {
+        height: 60px; /* Misma altura que el círculo */
+        padding: 0 30px; /* Espacio a los lados del texto */
+        border-radius: 30px; /* Bordes muy redondeados (Píldora) */
+        font-size: 18px; /* Texto legible pero no gigante */
+        text-transform: uppercase; /* Opcional: letras mayúsculas */
+        letter-spacing: 1px;
+    }
+
+
+
+    /* --- FONDO OSCURO (OVERLAY) --- */
+/* Esto oscurece el fondo detrás del modal para dar foco */
+.modal-overlay {
+    position: fixed;
+    top: 0;
     left: 0;
-    z-index: 999;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparente */
+    backdrop-filter: blur(2px); /* Opcional: difumina el fondo */
+    z-index: 998; /* Justo debajo del modal */
+    display: block; /* JS lo cambiaría a flex/block */
 }
-.button_mas{
-    width: 50px;
-    height: 50px;
+
+/* --- CAJA DEL MODAL --- */
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Centrado perfecto */
+    
+    width: 90%;
+    max-width: 400px; /* Que no sea gigante en PC */
+    background: white;
+    padding: 30px;
+    border-radius: 20px; /* Bordes redondeados modernos */
+    
+    /* Sombra profunda para dar efecto de "flotar" encima de todo */
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    
+    text-align: center;
+    font-family: sans-serif;
+    
+    /* Para ordenar los elementos internos */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px; /* Espacio entre textos y botones */
+}
+
+/* --- TIPOGRAFÍA --- */
+.modal_titulo {
+    font-size: 24px;
+    color: #333;
+    margin: 0;
+    font-weight: 700;
+}
+
+.modal_descripcion {
+    font-size: 16px;
+    color: #666; /* Gris más suave para textos secundarios */
+    margin: 0 0 10px 0;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+/* --- BOTONES DEL MODAL --- */
+/* Contenedor para ponerlos uno al lado del otro si quieres */
+.modal-actions {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    justify-content: center;
+}
+
+/* Reutilizamos tu estilo anterior para el botón PRINCIPAL (.btn-comun) 
+   pero le aseguramos un ancho mínimo para que se vea bien */
+.modal .btn-comun {
+    padding: 12px 24px;
+    border-radius: 50px; /* Estilo píldora */
+    font-size: 16px;
+    flex: 1; /* Ocupa espacio equitativo */
+}
+
+/* --- BOTÓN SECUNDARIO (SALIR) --- */
+.btn-exit {
+    background-color: #f0f0f0; /* Gris muy claro */
+    color: #555;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex: 1; /* Ocupa espacio equitativo */
+}
+
+.btn-exit:hover {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+    .btn-des{
+        display: none;
+        z-index: -11;
+    }
+
+
+
+    .custom-new{
     border-radius: 50%;
-    border: 3px solid black;
-}
+    background: radial-gradient(circle at center, rgba(0,255,0,0.7), rgba(0,255,0,0.2));
+    border: 2px solid rgba(0, 255, 0, 0.6);
+    box-shadow: 0 0 10px rgb(0 255 0 / 70%), 0 0 20px rgb(0 255 0 / 40%);
+    transition: box-shadow 0.3s ease;
+    animation: pulse 2s infinite;
+    }
