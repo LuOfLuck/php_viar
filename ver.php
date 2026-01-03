@@ -50,7 +50,7 @@ foreach ($lista_cuartos as $cuarto) {
     $stmtPuntos->execute([$id_cuarto]);
     
     foreach ($stmtPuntos->fetchAll() as $punto) {
-        $stmtLinks = $pdo->prepare("SELECT titulo, link FROM links WHERE id_punto = ?");
+        $stmtLinks = $pdo->prepare("SELECT id, titulo, link FROM links WHERE id_punto = ?");
         $stmtLinks->execute([$punto['id']]);
         $links_videos = $stmtLinks->fetchAll(PDO::FETCH_ASSOC);
 
@@ -134,7 +134,7 @@ foreach ($lista_cuartos as $cuarto) {
 <div id="app"> 
 
     <div class="imagenes">
-        <div class="button">
+        <div id="edit-p" class="button">
             <button id="btn-agregar" class="button_mas btn-comun">+</button>
             <button id="btn-guardar" class="button_mas--s btn-comun btn-des">Guardar</button>
             <button id="btn-borrar" class="button_mas--s btn-exit btn-des">Cancelar</button>
@@ -171,8 +171,22 @@ foreach ($lista_cuartos as $cuarto) {
     </div>
 
     <div id="box--cartel" class="box box--cartel">
-            <div class="box__header ">
-                <h3 class="box__header__h3">TITULO</h3>
+             <div class="box__header">
+                <div id="vistaTitulo" class="">
+                    <h3 id="boxTituloText" class="box__header__h3">TITULO</h3>
+                    <span id="btnEditarTitulo" class="titulo-edit" style="cursor: pointer; margin-left: 10px; color: #ffc107;">
+                        <i class="fa-solid fa-pencil"></i>
+                    </span>          
+                </div>
+
+                <form id="formTitulo" class="btn-des" action="" method="POST" style="display: flex; gap: 5px;">
+                    <input type="text" id="inputTituloEdit" class="form-control form-control-sm" value="" placeholder="Título">
+                    
+                    <input type="hidden" id="inputDescHidden" value="">
+                    
+                    <button type="submit" class="btn btn-sm btn-success"><i class="fa-solid fa-check"></i></button>
+                    <button type="button" id="btnCancelarEdit" class="btn btn-sm btn-secondary"><i class="fa-solid fa-xmark"></i></button>
+                </form>
             </div>
 
              <div id="iframe" class="box__footer">
@@ -183,8 +197,16 @@ foreach ($lista_cuartos as $cuarto) {
                     <button class="carousel-btn" id="prevBtn">‹</button>
                     <div class="carousel-indicators" id="indicators"></div>
                     <span class="counter" id="counter">1 / 1</span>
-                    <button class="carousel-btn" id="nextBtn">›</button>
+                    <button class="carousel-btn" id="nextBtn">›</button></br>
+                    
                 </div>
+                <div class="">
+                    <button class="button_mas--s btn-exit btn-cr" id="btnAgregarVideo">agregar video</button>
+                    <button class="button_mas--s btn-exit btn-cr" id="btnEliminarVideo">eliminar video</button>
+                    <button class="button_mas--s btn-exit btn-cr" id="btnEliminarPunto">Eliminar todo</button>
+                </div>
+                <input type="hidden" id="currentPointId" value="">
+                <input type="hidden" id="currentVideoId" value="">
             </div>
             <button id="button--end" class=" imagenes__button  button--end button--end--active">x</button>   
     </div>
@@ -201,7 +223,25 @@ foreach ($lista_cuartos as $cuarto) {
         </div>
     </div>
 </div>
+<div id="modalAddVideo" class="modal-overlay-2 d-none">
+    <div class="modal">
+        <h1 class="modal_titulo">Agregar Nuevo Video</h1>
+        <p class="modal_descripcion" style="margin-bottom: 15px;">Ingresa los datos del video de YouTube.</p>
+        
+        <div class="form-group" style="text-align: left; width: 100%; margin-bottom: 15px;">
+            <label style="display:block; font-weight:bold; margin-bottom:5px;">Título:</label>
+            <input type="text" id="newVideoTitle" class="modal-input" placeholder="Ej: Press de Banca">
+            
+            <label style="display:block; font-weight:bold; margin-top:10px; margin-bottom:5px;">Link (YouTube):</label>
+            <input type="text" id="newVideoLink" class="modal-input" placeholder="https://www.youtube.com/watch?v=...">
+        </div>
 
+        <div class="modal-actions">
+            <button id="btnCancelAdd" class="btn-exit">Cancelar</button>
+            <button id="btnSaveAdd" class="btn-comun">Guardar</button>
+        </div>
+    </div>
+</div>
 <footer class="footer">
     <div class="footer__link">
         <span>Todos los derechos reservados: </span>

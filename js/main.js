@@ -1,4 +1,19 @@
 // js/main.js
+const IS_ADMIN = window.location.pathname.includes(".php");
+
+// Opcional: Para ocultar los botones estáticos del HTML (Agregar, Eliminar, etc)
+window.addEventListener('load', () => {
+    if (!IS_ADMIN) {
+        // Buscamos todos los elementos que sean solo para admins
+        // Asegúrate de ponerle la clase "admin-only" a tus botones en el HTML
+        document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
+        
+        // Ocultar el lápiz del título principal
+        const btnEditMain = document.getElementById('btnEditarTitulo');
+        if(btnEditMain) btnEditMain.style.display = 'none';
+    }
+});
+const editP = document.getElementById("edit-p")
 
 // Referencias DOM
 const boxEnd = document.getElementById("button--end");
@@ -21,8 +36,11 @@ const indicators = document.getElementById('indicators');
 const counter = document.getElementById('counter');
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
+const currentPointId = document.getElementById('currentPointId');
+const currentVideoId = document.getElementById('currentVideoId');
 let currentIndex = 0;
 var length = 0;
+let currentVideosList = [];
 
 const tips = [
   "Puedes desplazarte arrastrando con el dedo o el mouse",
@@ -172,15 +190,23 @@ class ViewerConstructor{
         });
     }
 
-    viewerFocus(args){
+viewerFocus(args) {
         acceso.classList.remove("app__aceso--mostrar");
         this.viewer.lookAt(args.pitch, args.yaw, 20, 2500);
 
         boxEnd.classList.add('button--end--active');
         boxCartel.classList.add('box--active');
         boxTitulo.innerText = args.titulo;
-
- 
+        
+        // Asignar variables globales
+        currentVideosList = args.url;
+        currentPointId.value = args.id;
+        
+        if (args.url.length > 0) {
+            currentVideoId.value = args.url[0].id;
+        } else {
+            currentVideoId.value = "";
+        }
 
         length = args.url.length;
         track.innerHTML = "";
@@ -189,33 +215,130 @@ class ViewerConstructor{
         track.style.transform = `translateX(-${currentIndex * 100}%)`;
         counter.textContent = `${currentIndex + 1} / ${length}`;
         
+        // Ocultar elementos generales de admin si es necesario
+        // (Asegúrate de que 'editP' esté definido en tu código global o bórralo si no se usa)
+        if (typeof IS_ADMIN !== 'undefined' && IS_ADMIN && typeof editP !== 'undefined') {
+             editP.classList.add("d-none");
+        }
+
+        // --- INICIO DEL BUCLE ---
         args.url.forEach((video, index) => {
-            const div = document.createElement("div");
-            div.className = "video-item";
-            
-            const titulo = document.createElement("h3");
-            titulo.textContent = video.titulo;
-            
+            const divItem = document.createElement("div");
+            divItem.className = "video-item";
+
+            // 1. ESTRUCTURA BÁSICA (VISIBLE PARA TODOS)
+            const divView = document.createElement("div");
+            divView.className = "video-header-view";
+
+            const h3 = document.createElement("h3");
+            h3.textContent = video.titulo;
+            h3.style.margin = "0";
+
+            divView.appendChild(h3); // Agregamos el título siempre
+
+            // 2. LÓGICA EXCLUSIVA DE ADMIN (Faltaba este IF)
+            if (typeof IS_ADMIN !== 'undefined' && IS_ADMIN) {
+                
+                const iconEdit = document.createElement("span");
+                iconEdit.className = "icon-edit-video";
+                iconEdit.innerHTML = '<i class="fa-solid fa-pencil"></i>';
+                divView.appendChild(iconEdit); // Solo agregamos el lápiz si es admin
+
+                // B. Crear el Formulario (Input + Botones)
+                const divForm = document.createElement("form");
+                divForm.className = "video-header-edit d-none";
+
+                const inputEdit = document.createElement("input");
+                inputEdit.type = "text";
+                inputEdit.value = video.titulo;
+                inputEdit.className = "form-control form-control-sm";
+
+                const btnSave = document.createElement("button");
+                btnSave.innerHTML = '<i class="fa-solid fa-check"></i>';
+                btnSave.className = "btn btn-sm btn-success";
+                btnSave.type = "submit";
+
+                const btnCancel = document.createElement("button");
+                btnCancel.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+                btnCancel.className = "btn btn-sm btn-secondary";
+                btnCancel.type = "button";
+
+                divForm.appendChild(inputEdit);
+                divForm.appendChild(btnSave);
+                divForm.appendChild(btnCancel);
+                
+                // Agregamos el form al item
+                divItem.appendChild(divForm);
+
+                // C. Eventos (Solo existen si eres admin)
+                iconEdit.addEventListener("click", () => {
+                    divView.classList.add("d-none");
+                    divForm.classList.remove("d-none");
+                    inputEdit.focus();
+                });
+
+                btnCancel.addEventListener("click", () => {
+                    divForm.classList.add("d-none");
+                    divView.classList.remove("d-none");
+                    inputEdit.value = h3.textContent;
+                });
+
+                divForm.addEventListener("submit", (e) => {
+                    e.preventDefault();
+                    const nuevoTitulo = inputEdit.value;
+                    if (!nuevoTitulo.trim()) return;
+                    
+                    fetch('api_acciones.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            accion: 'editar_titulo_video',
+                            id_link: video.id,
+                            titulo: nuevoTitulo
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            h3.textContent = nuevoTitulo;
+                            video.titulo = nuevoTitulo;
+                            divForm.classList.add("d-none");
+                            divView.classList.remove("d-none");
+                        } else {
+                            alert("Error al actualizar");
+                        }
+                    });
+                });
+            } 
+            // --- FIN DEL IF ADMIN (Aquí cerraba el IF, no el forEach) ---
+
+            // 3. IFRAME (VISIBLE PARA TODOS)
             const iframe = document.createElement("iframe");
             iframe.src = video.link;
             iframe.allowFullscreen = true;
             iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-            
-            div.appendChild(titulo);
-            div.appendChild(iframe);
-            track.appendChild(div);
 
+            divItem.appendChild(divView);
+            // Nota: divForm ya se agregó dentro del IF
+            divItem.appendChild(iframe);
+            track.appendChild(divItem);
+
+            // Indicadores
             const indicator = document.createElement("div");
             indicator.className = "indicator" + (index === 0 ? " active" : "");
             indicator.addEventListener("click", () => goToSlide(index));
             indicators.appendChild(indicator);
-      });
+            
+        }); // <--- AQUÍ ES DONDE SE DEBE CERRAR EL FOREACH
     }
 
     viewerNormalize(){
         document.querySelectorAll(".custom-hotspot--desactive").forEach(e => {
             if(e){e.classList.remove("custom-hotspot--desactive")}
         });
+        if (typeof IS_ADMIN !== 'undefined' && IS_ADMIN && typeof editP !== 'undefined') {
+            editP.classList.remove("d-none")
+        }
         acceso.classList.add("app__aceso--mostrar");
         boxEnd.classList.remove("button--end--active");
         boxCartel.classList.remove("box--active");
@@ -357,6 +480,10 @@ function updateCarousel() {
     document.querySelectorAll('.indicator').forEach((ind, i) => {
         ind.classList.toggle('active', i === currentIndex);
     });
+    if (currentVideosList && currentVideosList[currentIndex]) {
+        currentVideoId.value = currentVideosList[currentIndex].id;
+        console.log("Video ID cambiado a:", currentVideoId.value); // Para verificar en consola
+    }
 }
 
 function goToSlide(index) {
