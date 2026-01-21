@@ -173,10 +173,10 @@ foreach ($lista_cuartos as $cuarto) {
     <div id="box--cartel" class="box box--cartel">
              <div class="box__header">
                 <div id="vistaTitulo" class="">
-                    <h3 id="boxTituloText" class="box__header__h3">TITULO</h3>
-                    <span id="btnEditarTitulo" class="titulo-edit" style="cursor: pointer; margin-left: 10px; color: #ffc107;">
+                    <h3><span id="boxTituloText" class="box__header__h3">TITULO</span> <span id="btnEditarTitulo" class="titulo-edit" style="cursor: pointer; margin-left: 10px; color: #ffc107;">
                         <i class="fa-solid fa-pencil"></i>
-                    </span>          
+                    </span> </h3>
+                            
                 </div>
 
                 <form id="formTitulo" class="btn-des" action="" method="POST" style="display: flex; gap: 5px;">
@@ -185,7 +185,7 @@ foreach ($lista_cuartos as $cuarto) {
                     <input type="hidden" id="inputDescHidden" value="">
                     
                     <button type="submit" class="btn btn-sm btn-success"><i class="fa-solid fa-check"></i></button>
-                    <button type="button" id="btnCancelarEdit" class="btn btn-sm btn-secondary"><i class="fa-solid fa-xmark"></i></button>
+                    <button type="button" id="btnCancelarEdit" class="btn btn-sm btn-secondary"><i class="fa-solid fa-xmark "></i></button>
                 </form>
             </div>
 
@@ -200,12 +200,33 @@ foreach ($lista_cuartos as $cuarto) {
                     <button class="carousel-btn" id="nextBtn">›</button></br>
                     
                 </div>
-                <div class="">
-                    <button class="button_mas--s btn-exit btn-cr" id="btnAgregarVideo">agregar video</button>
-                    <button class="button_mas--s btn-exit btn-cr" id="btnEliminarVideo">eliminar video</button>
-                    <button class="button_mas--s btn-exit btn-cr" id="btnEliminarPunto">Eliminar todo</button>
-                </div>
-                <input type="hidden" id="currentPointId" value="">
+              <div class="action-buttons">
+    <button class="btn-action btn-add" id="btnAgregarVideo">
+        <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Agregar
+    </button>
+    
+    <button class="btn-action btn-del" id="btnEliminarVideo">
+        <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            <line x1="10" y1="11" x2="10" y2="17"></line>
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+        </svg>
+        Video
+    </button>
+    
+    <button class="btn-action btn-del-all" id="btnEliminarPunto">
+        <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+             <line x1="18" y1="6" x2="6" y2="18"></line>
+             <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+        Todo
+    </button>
+</div>                <input type="hidden" id="currentPointId" value="">
                 <input type="hidden" id="currentVideoId" value="">
             </div>
             <button id="button--end" class=" imagenes__button  button--end button--end--active">x</button>   
@@ -239,6 +260,20 @@ foreach ($lista_cuartos as $cuarto) {
         <div class="modal-actions">
             <button id="btnCancelAdd" class="btn-exit">Cancelar</button>
             <button id="btnSaveAdd" class="btn-comun">Guardar</button>
+        </div>
+    </div>
+</div>
+<div id="customModal" class="modal-overlay" style="display: none;">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 id="modalTitle">Título</h3>
+        </div>
+        <div class="modal-body">
+            <p id="modalMessage">Mensaje aquí...</p>
+        </div>
+        <div class="modal-footer">
+            <button id="btnModalCancel" class="btn-modal-cancel">Cancelar</button>
+            <button id="btnModalConfirm" class="btn-modal-confirm">Aceptar</button>
         </div>
     </div>
 </div>

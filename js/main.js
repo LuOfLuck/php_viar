@@ -199,14 +199,17 @@ viewerFocus(args) {
         boxTitulo.innerText = args.titulo;
         
         // Asignar variables globales
-        currentVideosList = args.url;
-        currentPointId.value = args.id;
-        
-        if (args.url.length > 0) {
-            currentVideoId.value = args.url[0].id;
-        } else {
-            currentVideoId.value = "";
+        if(IS_ADMIN){
+            currentVideosList = args.url;
+            currentPointId.value = args.id;       
+            if (args.url.length > 0) {
+                currentVideoId.value = args.url[0].id;
+            } else {
+                currentVideoId.value = "";
+            }
         }
+       
+ 
 
         length = args.url.length;
         track.innerHTML = "";
@@ -324,12 +327,16 @@ viewerFocus(args) {
             track.appendChild(divItem);
 
             // Indicadores
-            const indicator = document.createElement("div");
-            indicator.className = "indicator" + (index === 0 ? " active" : "");
-            indicator.addEventListener("click", () => goToSlide(index));
-            indicators.appendChild(indicator);
+            console.log(index)
+            if(index<8){
+                const indicator = document.createElement("div");
+                indicator.className = "indicator" + (index === 0 ? " active" : "");
+                indicator.addEventListener("click", () => goToSlide(index));
+                indicators.appendChild(indicator);
+            }
+
             
-        }); // <--- AQUÍ ES DONDE SE DEBE CERRAR EL FOREACH
+        });
     }
 
     viewerNormalize(){
@@ -478,7 +485,9 @@ function updateCarousel() {
     counter.textContent = `${currentIndex + 1} / ${length}`;
     
     document.querySelectorAll('.indicator').forEach((ind, i) => {
-        ind.classList.toggle('active', i === currentIndex);
+        console.log("ind: ", ind)
+        console.log("i: ", i)
+        ind.classList.toggle('active', (i === currentIndex || (currentIndex>=8 && i==7) ));
     });
     if (currentVideosList && currentVideosList[currentIndex]) {
         currentVideoId.value = currentVideosList[currentIndex].id;
@@ -505,5 +514,4 @@ if(nextBtn) {
     });
 }
 
-// Arrancar
-main();
+if(IS_ADMIN){main()}

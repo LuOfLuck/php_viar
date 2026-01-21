@@ -3,13 +3,13 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 100%; 
         height: auto; 
         padding: 10px 0;
         background: transparent;
         position: absolute;
         bottom: 61px;
-        left: 0;
+        left: 50%;
+        transform: translateX(-50%);
         z-index: 999;
         gap: 20px; 
     }
@@ -83,7 +83,7 @@
     left: 50%;
     transform: translate(-50%, -50%); /* Centrado perfecto */
     
-    width: 90%;
+    width: 70%;
     max-width: 400px; /* Que no sea gigante en PC */
     background: white;
     padding: 30px;
@@ -167,8 +167,13 @@
     }
 
 
-
-
+.video-header-view{
+    display: flex;
+    flex-direction: row;
+} 
+.video-header-view h3{
+    margin: 0 5px 0 5px;
+}
 
 .modal_descripcion {
     font-size: 0.9rem;
@@ -196,3 +201,148 @@
     margin-top: 20px;
 }
 
+
+
+
+.form-control{
+    font-size: clamp(1.2em, 4vw, 1.8em);
+    margin: 0;
+    text-shadow: 0 0 10px rgba(200, 200, 200, 0.7);
+    color: #5a6c7d;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    background-color: transparent; 
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 6px; 
+    padding: 8px 12px; 
+    outline: none; 
+    transition: all 0.3s ease;
+}
+.form-control:focus {
+    background: #fff;
+    border-color: #aaa;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.btn-success,
+.btn-secondary{
+    margin: 4px;
+    min-height: 100%;
+    width: 35px;
+    background-color: #28a745; 
+    color: white;
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+.btn-secondary{
+    background-color: #dc3545;
+}
+.btn-success:hover {
+    background-color: #218838;
+}
+.btn-secondary:hover{
+   background-color: #c82333;
+}
+
+.btn-secondary:active,
+.btn-success:active {
+    transform: scale(0.98); /* Pequeño efecto de presión */
+}
+.fa-pencil{
+    color: orange;
+    margin: 5px;
+    font-size: 20px;
+}
+
+/* Contenedor principal para alinear horizontalmente */
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;               /* Espacio entre botones */
+    width: 100%;
+    padding: 15px 0;         /* Un poco más de aire vertical */
+}
+
+/* Estilo base para todos los botones */
+.btn-action {
+    flex: 1;                 /* Ancho equitativo para los tres */
+    padding: 12px 8px;
+    border: none;
+    border-radius: 16px;     /* Bordes un poco más redondeados */
+    font-size: 11px;         /* Texto ligeramente más pequeño para dar prioridad al icono */
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;  /* Icono arriba, texto abajo */
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Sombra muy sutil */
+}
+
+/* --- NUEVO: Estilo para los iconos SVG --- */
+.btn-icon {
+    width: 22px;           /* Tamaño del icono */
+    height: 22px;
+    margin-bottom: 6px;    /* Espacio entre el icono y el texto */
+    opacity: 0.9;          /* Ligeramente transparente para un look moderno */
+}
+
+/* Efecto al presionar */
+.btn-action:active {
+    transform: scale(0.95);
+    box-shadow: none;
+}
+
+/* --- COLORES (Los iconos heredan estos colores automáticamente) --- */
+
+/* Estilo para "Agregar Video" (Verde azulado) */
+.btn-add {
+    background-color: #e0f7fa;
+    color: #00796b;
+}
+
+/* Estilo para "Eliminar Video" (Rojo anaranjado suave) */
+.btn-del {
+    background-color: #fbe9e7;
+    color: #d84315;
+}
+
+/* Estilo para "Eliminar Todo" (Gris neutro) */
+.btn-del-all {
+    background-color: #f5f5f5;
+    color: #616161;
+}
+
+.carousel-controls {
+    margin-top: 0px;
+    height: 50px;
+}
+
+
+
+
+
+.modal-header h3 { margin-top: 0; color: #333; }
+.modal-body p { color: #555; font-size: 15px; margin-bottom: 20px; line-height: 1.5; }
+
+/* Botones */
+.modal-footer { display: flex; gap: 10px; justify-content: center; }
+.modal-footer button {
+    flex: 1; padding: 10px; border: none; border-radius: 8px; 
+    cursor: pointer; font-weight: 600; font-size: 14px;
+}
+
+.btn-modal-confirm { background: #00796b; color: white; }
+.btn-modal-cancel { background: #f0f0f0; color: #555; }
+.btn-modal-cancel:hover { background: #e0e0e0; }
+
+/* Animación de entrada */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }

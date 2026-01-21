@@ -21,6 +21,70 @@ const btnSaveAdd = document.getElementById('btnSaveAdd');
 const inputNewTitle = document.getElementById('newVideoTitle');
 const inputNewLink = document.getElementById('newVideoLink');
 
+const Popup = {
+    overlay: document.getElementById('customModal'),
+    title: document.getElementById('modalTitle'),
+    message: document.getElementById('modalMessage'),
+    btnConfirm: document.getElementById('btnModalConfirm'),
+    btnCancel: document.getElementById('btnModalCancel'),
+
+    // Función para cerrar el modal
+    close: function() {
+        this.overlay.style.display = 'none';
+    },
+
+    // Método CONFIRM (Si/No)
+    confirm: function(titulo, texto, onConfirm) {
+        this.title.innerText = titulo;
+        this.message.innerHTML = texto.replace(/\n/g, "<br>"); // Permitir saltos de linea
+        
+        // Mostrar botón cancelar
+        this.btnCancel.style.display = "inline-block";
+        this.btnConfirm.innerText = "Sí, eliminar";
+        this.btnConfirm.style.backgroundColor = "#d32f2f"; // Rojo para acciones destructivas
+
+        this.overlay.style.display = 'flex';
+
+        // LIMPIEZA DE EVENTOS (Truco para borrar listeners viejos)
+        const newConfirm = this.btnConfirm.cloneNode(true);
+        const newCancel = this.btnCancel.cloneNode(true);
+        this.btnConfirm.replaceWith(newConfirm);
+        this.btnCancel.replaceWith(newCancel);
+        this.btnConfirm = newConfirm;
+        this.btnCancel = newCancel;
+
+        // Asignar nuevos eventos
+        this.btnConfirm.addEventListener('click', () => {
+            this.close();
+            if (onConfirm) onConfirm(); // Ejecuta la acción si dijo que sí
+        });
+        
+        this.btnCancel.addEventListener('click', () => this.close());
+    },
+
+    // Método ALERT (Solo OK)
+    alert: function(titulo, texto, onOk) {
+        this.title.innerText = titulo;
+        this.message.innerHTML = texto;
+        
+        // Ocultar cancelar y poner botón normal
+        this.btnCancel.style.display = "none";
+        this.btnConfirm.innerText = "Entendido";
+        this.btnConfirm.style.backgroundColor = "#00796b"; // Verde normal
+
+        this.overlay.style.display = 'flex';
+
+        // Limpieza de eventos
+        const newConfirm = this.btnConfirm.cloneNode(true);
+        this.btnConfirm.replaceWith(newConfirm);
+        this.btnConfirm = newConfirm;
+
+        this.btnConfirm.addEventListener('click', () => {
+            this.close();
+            if (onOk) onOk();
+        });
+    }
+};
 // 1. ABRIR EL MODAL
 if (btnAgregarVideo) {
     btnAgregarVideo.addEventListener('click', () => {
@@ -225,10 +289,12 @@ const registrarClick = (event) => {
 agregar.addEventListener("click",(e)=>{
 	modal.classList.remove("btn-des")
 	agregar.classList.add("btn-des")
+    acceso.classList.add("btn-des")
 })
 exit.addEventListener("click",(e)=>{
 	modal.classList.add("btn-des")
 	agregar.classList.remove("btn-des")
+    acceso.classList.remove("btn-des")
 })
 
 edit.addEventListener("click", (e) => {
@@ -242,6 +308,7 @@ edit.addEventListener("click", (e) => {
 guardar.addEventListener("click", (e) => {
     guardar.classList.add("btn-des");
     borrar.classList.add("btn-des");
+    acceso.classList.remove()("btn-des");
     if(typeof agregar !== 'undefined') agregar.classList.remove("btn-des"); 
     vistaPrinc.viewer.off("mousedown", registrarClick);
     guardarHostpost();
@@ -254,6 +321,7 @@ borrar.addEventListener("click", (e) => {
     guardar.classList.add("btn-des");
     borrar.classList.add("btn-des");
     agregar.classList.remove("btn-des")
+    acceso.classList.remove("btn-des")
   
     console.log(newHost);
     newHost.forEach((host)=>{
@@ -264,51 +332,62 @@ borrar.addEventListener("click", (e) => {
     newHost = []
 });
 
-// B. ELIMINAR VIDEO (El que se ve actualmente)
+// B. ELIMINAR VIDEO
 document.getElementById('btnEliminarVideo').addEventListener('click', () => {
     const idLink = document.getElementById('currentVideoId').value;
     
-    if(!idLink) return alert("No hay video seleccionado o la lista está vacía.");
-    if(!confirm("¿Seguro que quieres borrar este video?")) return;
+    if(!idLink) {
+        Popup.alert("Atención", "No hay video seleccionado o la lista está vacía.");
+        return;
+    }
 
-    fetch('api_acciones.php', {
-        method: 'POST',
-        body: JSON.stringify({
-            accion: 'eliminar_video',
-            id_link: idLink
-        })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if(data.status === 'success') {
-            alert("Video eliminado.");
-            location.reload();
+    // Usamos el nuevo sistema
+    Popup.confirm(
+        "¿Eliminar Video?", 
+        "Estás a punto de borrar este video de la base de datos.<br>Esta acción es irreversible.", 
+        () => {
+            // Este código solo se ejecuta si el usuario presiona "Sí, eliminar"
+            fetch('api_acciones.php', {
+                method: 'POST',
+                body: JSON.stringify({ accion: 'eliminar_video', id_link: idLink })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === 'success') {
+                    // Popup de éxito antes de recargar
+                    Popup.alert("¡Hecho!", "Video eliminado correctamente.", () => {
+                        location.reload();
+                    });
+                } else {
+                    Popup.alert("Error", "No se pudo eliminar el video.");
+                }
+            });
         }
-    });
+    );
 });
 
-// C. EDITAR PUNTO (Título y Descripción)
 
-
-// D. ELIMINAR TODO (Punto y videos)
+// D. ELIMINAR TODO
 document.getElementById('btnEliminarPunto').addEventListener('click', () => {
     const idPunto = document.getElementById('currentPointId').value;
     if(!idPunto) return;
 
-    if(!confirm("⚠️ ¡CUIDADO! ⚠️\nEsto borrará el punto, la descripción y TODOS los videos asociados.\n¿Continuar?")) return;
-
-    fetch('api_acciones.php', {
-        method: 'POST',
-        body: JSON.stringify({
-            accion: 'eliminar_punto',
-            id_punto: idPunto
-        })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if(data.status === 'success') {
-            alert("Punto eliminado completamente.");
-            location.reload(); // Recargar para que desaparezca del tour
+    Popup.confirm(
+        "⚠️ ¡PELIGRO CRÍTICO!", 
+        "Esto borrará el <b>Punto completo</b>, su descripción y <b>TODOS</b> los videos asociados.\n¿Deseas realmente continuar?", 
+        () => {
+            fetch('api_acciones.php', {
+                method: 'POST',
+                body: JSON.stringify({ accion: 'eliminar_punto', id_punto: idPunto })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === 'success') {
+                    Popup.alert("Eliminado", "Punto eliminado completamente.", () => {
+                         location.reload();
+                    });
+                }
+            });
         }
-    });
+    );
 });

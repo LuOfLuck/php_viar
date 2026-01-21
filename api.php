@@ -1,8 +1,16 @@
 <?php
-// api.php
-header("Access-Control-Allow-Origin: *"); // Permite peticiones desde cualquier lugar (CORS)
-header("Content-Type: application/json; charset=UTF-8");
+// --- INICIO DE CABECERAS CORS ---
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 
+// Manejo de la solicitud "OPTIONS" (Preflight)
+// A veces el navegador envía una pregunta previa antes de pedir los datos.
+// Si es OPTIONS, respondemos OK y cortamos aquí.
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 require 'db.php';
 
 // Obtener parámetros de la URL
